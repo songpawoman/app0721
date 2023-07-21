@@ -13,6 +13,7 @@ public class MessageThread extends Thread{
 	Socket socket;
 	BufferedReader buffr; //버퍼처리된 문자기반 입력스트림
 	BufferedWriter buffw; //버퍼처리된 문자기반 출력스트림
+	boolean loopFlag=true;
 	
 	public MessageThread(GUIServer guiServer, Socket socket) {
 		this.guiServer=guiServer;
@@ -42,7 +43,12 @@ public class MessageThread extends Thread{
 			guiServer.area.append(msg+"\n");
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			System.out.println("나가서 못 읽어!!");
+			loopFlag=false;
+			
+			guiServer.vec.remove(this);//명단에서 나 제거
+			guiServer.area.append("현재 접속자 수 "+guiServer.vec.size()+"\n");
 		}
 	}
 	
@@ -59,7 +65,7 @@ public class MessageThread extends Thread{
 	//쓰레드는 run() 메서드의 닫는 브레이스를 만나면 소멸되므로, 
 	//죽이지 않으려면 무한루프로 처리해야 함
 	public void run() {
-		while(true) {
+		while(loopFlag) {
 			listen();
 		}
 	}

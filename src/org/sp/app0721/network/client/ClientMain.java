@@ -103,6 +103,9 @@ public class ClientMain extends JFrame{
 		String msg=t_input.getText();
 		
 		mt.sendMsg(msg);//서버에 메시지 보내기 
+		
+		//입력 텍스트필드 초기화 
+		t_input.setText("");
 	}
 	
 	public static void main(String[] args) {
