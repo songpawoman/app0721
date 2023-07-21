@@ -31,9 +31,15 @@ public class MessageThread extends Thread{
 		String msg=null;
 		try {
 			msg=buffr.readLine(); //듣기
-			sendMsg(msg); //다시 보내기
+			
+			//접속한 모든 사용자마다 대응되는 메시지쓰레드 객체의 sendMsg()호출
+			for(int i=0;i<guiServer.vec.size();i++) {
+				MessageThread mt=guiServer.vec.get(i);
+				mt.sendMsg(msg); //다시 보내기;
+			}
 			
 			//로그 남기기 
+			guiServer.area.append(msg+"\n");
 			
 		} catch (IOException e) {
 			e.printStackTrace();

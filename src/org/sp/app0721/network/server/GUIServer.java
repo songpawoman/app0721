@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -24,6 +25,8 @@ public class GUIServer extends JFrame{
 	
 	Thread runThread; //메인 쓰레드를 대기상태에 빠지지 않게 하기 위함 
 	ServerSocket server; //대화용이 아닌, 접속자 감지 및 대화용 소켓 얻기 위한 서버소켓
+
+	Vector<MessageThread> vec; //ArrayList 와 동일하다..하지만, 쓰레드 동기화를 지원한다..
 	
 	public GUIServer() {
 		p_north = new JPanel();
@@ -31,6 +34,7 @@ public class GUIServer extends JFrame{
 		bt = new JButton("서버가동");
 		area = new JTextArea();
 		scroll = new JScrollPane(area);
+		vec = new Vector<MessageThread>();
 		
 		//조립 
 		p_north.add(t_port);
@@ -69,8 +73,14 @@ public class GUIServer extends JFrame{
 				area.append(ip+"접속\n");
 				
 				//접속자가 발견되면, 대화용 쓰레드를 생성하면서 소켓을 넘겨주자 
-				MessageThread mt = new MessageThread(socket);
+				MessageThread mt = new MessageThread(this, socket);
 				mt.start(); //대화용 쓰레드 동작 시작~!!!!
+				
+				//태어난 대화용 쓰레드를 벡터에 담아두자 
+				vec.add(mt);
+				
+				//현재까지 접속된 사용자 수 로그출력 
+				area.append("현재까지 "+vec.size()+"명 접속 중\n");
 			}
 			
 		} catch (IOException e) {
