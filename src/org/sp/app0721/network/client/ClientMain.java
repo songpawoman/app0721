@@ -33,6 +33,8 @@ public class ClientMain extends JFrame{
 	JTextField t_input;
 	
 	Socket socket;
+	BufferedReader buffr;
+	BufferedWriter buffw;
 	
 	public ClientMain() {
 		p_north = new JPanel();
@@ -86,8 +88,8 @@ public class ClientMain extends JFrame{
 		try {
 			socket = new Socket((String)box.getSelectedItem(), port);
 			
-			BufferedReader buffr=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			BufferedWriter buffw=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			buffr=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			buffw=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -98,7 +100,14 @@ public class ClientMain extends JFrame{
 	
 	//서버에 메시지 보내기 
 	public void send() {
-
+		String msg=t_input.getText();
+		
+		try {
+			buffw.write(msg+"\n");
+			buffw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {

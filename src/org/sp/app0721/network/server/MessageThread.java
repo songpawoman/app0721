@@ -9,12 +9,15 @@ import java.net.Socket;
 
 //서버에 접속하는 각각의 클라이언트마다 1:1 대응하는 대화 전용 쓰레드 정의
 public class MessageThread extends Thread{
+	GUIServer guiServer;
 	Socket socket;
 	BufferedReader buffr; //버퍼처리된 문자기반 입력스트림
 	BufferedWriter buffw; //버퍼처리된 문자기반 출력스트림
 	
-	public MessageThread(Socket socket) {
+	public MessageThread(GUIServer guiServer, Socket socket) {
+		this.guiServer=guiServer;
 		this.socket=socket;
+		
 		try {
 			buffr = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
 			buffw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())); 
@@ -29,6 +32,9 @@ public class MessageThread extends Thread{
 		try {
 			msg=buffr.readLine(); //듣기
 			sendMsg(msg); //다시 보내기
+			
+			//로그 남기기 
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
