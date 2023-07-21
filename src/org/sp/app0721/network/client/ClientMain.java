@@ -5,9 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -30,6 +31,8 @@ public class ClientMain extends JFrame{
 	JScrollPane scroll;
 	
 	JTextField t_input;
+	
+	Socket socket;
 	
 	public ClientMain() {
 		p_north = new JPanel();
@@ -75,9 +78,22 @@ public class ClientMain extends JFrame{
 		});
 	}
 	
-	//에코서버에 접속하기 
+	//서버에 접속하기 
 	public void connect() {
-
+		int port = Integer.parseInt(t_port.getText());
+		
+		//소켓의 생성자 호출시, 접속이 시도됨
+		try {
+			socket = new Socket((String)box.getSelectedItem(), port);
+			
+			BufferedReader buffr=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			BufferedWriter buffw=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//서버에 메시지 보내기 
